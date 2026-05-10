@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultrathink"
+  short_description: "High-confidence autonomous strategy loop"
+  default_prompt: "Use $ultrathink to stress-test the strategy, delegate carefully, implement, verify, and iterate until confidence is justified."
