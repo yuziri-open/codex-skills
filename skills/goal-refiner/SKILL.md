@@ -7,84 +7,108 @@ description: Refine slash-goal and /goal requests into a user-satisfying goal be
 
 ## Core Rule
 
-Before creating or updating a goal, transform the user's rough instruction into a goal that the user can plausibly accept as "yes, that is what I wanted."
+Before creating or updating a goal, turn the user's rough instruction into an objective that would make them say, "Yes, that is what I meant."
 
-Do not treat the first wording as final when it is vague, emotional, broad, or tool-shaped. Interpret the user's need, frustration, desired future state, and definition of done, then set a concrete objective.
+Do not copy a template, imitate prior examples, or force every goal to have the same level of detail. The right goal is the smallest objective that still captures the user's real intent, the work to be done, the important boundaries, and how completion can be recognized.
 
-## Workflow
+## What "Good" Means
+
+A refined goal is good when it:
+
+- names the desired finished state, not just the activity
+- reflects the user's need, pain, urgency, or dissatisfaction when present
+- identifies the concrete deliverable, decision, implementation, or state change
+- includes only the constraints that materially affect execution or verification
+- is detailed enough for an agent to act without drifting
+- is not so detailed that it narrows the work incorrectly
+- preserves the user's exact wording when their wording is intentional and already precise
+
+## Anti-Overfitting Rule
+
+Treat any examples, prior goals, or familiar phrasing as non-authoritative. They are not patterns to reuse.
+
+When refining, reason from the current request and context only:
+
+- If the task is simple, use a simple goal.
+- If the task is broad, ambiguous, high-risk, or multi-step, make the goal more specific.
+- If the user complains about quality, alignment, or "AI-ish" output, include the quality failure to avoid and the quality bar to hit.
+- If the user asks for a tool action, infer the human outcome behind the tool action.
+- If the user asks for an improvement, name what must become better and how that improvement will be verified.
+
+## Intent Reconstruction
+
+Before setting a goal, infer these fields mentally. Do not output the full analysis unless the user asks.
+
+- Need: what the user is trying to make possible
+- Pain: what is wrong, inefficient, risky, unclear, disappointing, or low quality
+- Desired outcome: what should be true when the work is done
+- Deliverable: what file, artifact, implementation, decision, publication, or state should exist
+- Acceptance: what would prove the result is complete and usable
+- Boundaries: what should not be changed, assumed, sent, published, deleted, or overdone
+- Scope horizon: whether the goal is for this turn, the active task, or a broader project
+
+If a field is irrelevant to the task, omit it from the final objective.
+
+## Detail Calibration
+
+Choose the goal's detail level based on the work, not on a fixed formula.
+
+- Minimal detail: use for tiny, clear requests where extra wording would add noise.
+- Moderate detail: use for normal implementation, writing, research, or debugging tasks where the deliverable and verification should be named.
+- High detail: use for ambiguous, high-risk, multi-file, publishing, automation, external-service, or user-dissatisfaction tasks where mistakes are costly.
+
+Increase detail only when it changes how the work should be done or checked. Do not list every inferred subtask inside the goal unless those subtasks are essential acceptance criteria.
+
+## Refinement Workflow
 
 1. Detect the goal moment.
-   - Trigger on `/goal`, `goal`, "set a goal", Japanese goal-setting phrasing such as "set the goal", "make this into a goal", or dissatisfaction with an existing goal.
-   - If the user explicitly provides a final objective with no ambiguity, preserve it closely.
-   - If the user is asking for a better goal, improve it before using any goal tool.
+   - Trigger on `/goal`, `goal`, "set a goal", Japanese goal-setting phrasing, or user dissatisfaction with a current or proposed goal.
+   - If the user explicitly provides a final objective and it is already precise, preserve it closely.
+   - If the user requests a better goal, improve the objective before using any goal tool.
 
-2. Reconstruct intent.
-   Identify these six elements from the message and current context:
-   - Need: what the user is really asking to make possible.
-   - Pain: what is currently unsatisfying, risky, slow, confusing, or low quality.
-   - Desired outcome: what should be true at the end.
-   - Deliverable: what artifact, decision, implementation, or state should exist.
-   - Acceptance criteria: what would make the user feel the work is complete and usable.
-   - Boundaries: what should not be changed, assumed, sent, published, or overdone.
+2. Identify the user's real target.
+   - Translate tool-shaped language into outcome-shaped language.
+   - Translate vague improvement language into a visible finished state.
+   - Preserve concrete user instructions such as repository names, file paths, deadlines, deliverables, and publication requests.
 
-3. Convert vague requests into a completion-shaped objective.
-   Prefer goals that name the finished state, not just the activity.
-   - Weak: "Improve the prompt."
-   - Strong: "Create and validate a Codex skill that detects /goal-style requests and turns rough intent into a concrete, user-satisfying objective before any goal is set."
+3. Decide the required specificity.
+   - Ask: what detail would prevent the most likely wrong execution?
+   - Ask: what detail would let us verify completion?
+   - Exclude detail that merely sounds thorough but does not guide action.
 
-4. Add quality expectations when the user signals dissatisfaction.
-   If the user says the current goal is often not convincing, shallow, too AI-led, or not aligned with human expectations, include explicit quality language:
-   - "captures the user's need, pain, desired outcome, scope, and completion criteria"
-   - "asks only necessary clarifying questions"
-   - "keeps the user's exact wording when it is clearly intentional"
-   - "produces a goal that is specific enough to guide execution and verification"
+4. Compose the objective.
+   - Prefer one sentence.
+   - Use two sentences only when a single sentence would become tangled or hide an important boundary.
+   - Include the deliverable and acceptance signal when they matter.
+   - Avoid generic phrases such as "improve the thing" unless the user intentionally used them as the target label.
 
 5. Decide whether to ask a question.
-   Ask one concise question only when a wrong assumption would materially change the goal. Otherwise infer from context and proceed.
-   Useful question types:
-   - "Should this goal cover only this turn, or the broader project?"
-   - "Is the main deliverable a file change, a plan, or a decision?"
-   - "Should I optimize for speed, depth, or minimal disruption?"
+   - Ask one concise question only when two plausible interpretations would lead to materially different work.
+   - Otherwise, infer from context and proceed.
 
 6. Set the goal.
-   Use `create_goal` only after the objective is refined.
-   Keep the objective one sentence when possible.
-   Include a token budget only if the user explicitly requests one.
+   - Use `create_goal` only after the objective is refined.
+   - Include a token budget only if the user explicitly requests one.
 
-## Goal Formula
+## Internal Checks Before Calling `create_goal`
 
-Use this mental template, then compress it into natural language:
+Reject and rewrite the objective if any of these are true:
 
-`Achieve [desired outcome] by producing/updating [deliverable or state], while accounting for [need/pain/context], with completion defined by [acceptance criteria and verification].`
-
-Examples:
-
-- User: `/goal make a skill`
-  Goal: `Create and validate a local Codex skill that reliably guides future agents through the requested workflow, including clear trigger metadata, concise instructions, UI metadata, and validator-confirmed structure.`
-
-- User: `/goal make this a more convincing goal`
-  Goal: `Refine the active task into a concrete objective that reflects the user's underlying need, dissatisfaction, desired finish state, scope boundaries, and acceptance criteria before execution continues.`
-
-- User: `/goal make this analysis good`
-  Goal: `Turn the analysis into a decision-ready deliverable with clear findings, evidence, risks, unanswered questions, and next actions that match the user's intended use.`
+- It describes an activity but not the result.
+- It could fit many unrelated tasks.
+- It blindly reuses example-like wording.
+- It adds constraints the user did not imply.
+- It omits a stated deliverable, repository, file path, publication target, or verification requirement.
+- It authorizes external sending, publishing, destructive edits, credential handling, or privacy-impacting actions without explicit user request.
+- It is too narrow to let the agent do necessary supporting work.
+- It is too broad to know when the work is done.
 
 ## Output Behavior
 
-When using this skill, briefly explain the refined goal if helpful, then call the goal tool. Avoid long meta-explanations unless the user asks how the goal was derived.
+If helpful, briefly state the refined goal in plain language, then call the goal tool. Keep the explanation shorter than the goal-setting work itself.
 
-If the goal is inferred, say so plainly:
+Use phrasing like:
 
 `Given that intent, I will set the goal as: "..."`
 
-If the user seems likely to disagree with the scope, ask before setting it.
-
-## Quality Checklist
-
-Before setting the goal, verify:
-
-- The objective is outcome-based, not merely activity-based.
-- The deliverable or final state is visible.
-- The user's pain or dissatisfaction is reflected when present.
-- Completion criteria are concrete enough to verify.
-- The goal does not authorize external sending, publishing, destructive edits, or credential handling unless the user explicitly requested and approved it.
-- The wording is specific but not so narrow that it blocks necessary execution.
+If the user likely expects immediate execution after `/goal`, set the goal and continue the task rather than stopping at meta-discussion.

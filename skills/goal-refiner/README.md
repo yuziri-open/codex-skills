@@ -5,6 +5,8 @@ Refine `/goal` and goal-setting requests into a concrete, user-satisfying object
 `goal-refiner` helps Codex:
 
 - infer the user's real need, pain, desired outcome, deliverable, boundaries, and acceptance criteria
+- calibrate the right level of detail for each task instead of forcing a fixed template
+- avoid overfitting to examples or familiar goal phrasing
 - preserve the user's wording when the objective is already clear
 - ask only necessary clarifying questions
 - set goals that are specific enough to guide execution and verification
