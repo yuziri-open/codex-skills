@@ -1,0 +1,30 @@
+# goal-refiner
+
+Refine `/goal` and goal-setting requests into a concrete, user-satisfying objective before Codex creates or updates an active goal.
+
+`goal-refiner` helps Codex:
+
+- infer the user's real need, pain, desired outcome, deliverable, boundaries, and acceptance criteria
+- preserve the user's wording when the objective is already clear
+- ask only necessary clarifying questions
+- set goals that are specific enough to guide execution and verification
+
+## Install
+
+Copy this skill into your Codex skills directory:
+
+```sh
+mkdir -p "$HOME/.codex/skills"
+cp -R skills/goal-refiner "$HOME/.codex/skills/goal-refiner"
+```
+
+Then invoke it with:
+
+```text
+$goal-refiner
+```
+
+## Files
+
+- `SKILL.md`: main skill instructions
+- `agents/openai.yaml`: Codex UI metadata and default prompt
