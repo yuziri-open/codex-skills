@@ -1,9 +1,9 @@
 ---
-name: goal-refiner
-description: Refine slash-goal and /goal requests into a user-satisfying goal before creating or updating an active goal. Use when the user invokes /goal, says goal, asks to set a goal, complains that AI-selected goals feel wrong, wants a more convincing objective, or needs Codex to infer the true need, pain, desired outcome, completion criteria, scope, and quality bar before calling create_goal or update_goal.
+name: g-refiner
+description: Refine slash-goal and /goal requests into a user-satisfying goal before creating or updating an active goal. Use when the user invokes /goal, says goal, asks to set a goal, complains that AI-selected goals feel wrong, wants a more convincing objective, or needs Codex to infer the true need, pain, desired outcome, completion criteria, scope, and quality bar before calling create_goal or update_goal. Invoke as $g-refiner.
 ---
 
-# Goal Refiner
+# G Refiner
 
 ## Core Rule
 

@@ -5,7 +5,7 @@ Public collection of Codex skills and related agent workflows.
 ## Skills
 
 - [`skills/ultrathink`](skills/ultrathink): high-rigor autonomous development and strategy validation mode
-- [`skills/goal-refiner`](skills/goal-refiner): adaptively refine `/goal` requests into task-appropriate, user-satisfying objectives before setting active goals
+- [`skills/g-refiner`](skills/g-refiner): adaptively refine `/goal` requests into task-appropriate, user-satisfying objectives before setting active goals
 
 ## Layout
 

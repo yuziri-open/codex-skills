@@ -1,8 +1,0 @@
-interface:
-  display_name: "Goal Refiner"
-  short_description: "Turn /goal intent into an adaptive, satisfying objective."
-  brand_color: "#7C3AED"
-  default_prompt: "Use $goal-refiner before setting /goal to infer the user's real need, calibrate the right level of detail for the task, avoid example/template overfitting, and set a goal with clear completion criteria."
-
-policy:
-  allow_implicit_invocation: true
